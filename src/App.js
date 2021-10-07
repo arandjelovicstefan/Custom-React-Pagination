@@ -1,25 +1,31 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useEffect, useState } from 'react';
+import { getAllLaunches } from './service';
+import Launches from './components/Launches';
+import Select from './components/Select';
+import Pagination from './components/Pagination';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
-}
+const App = () => {
+   const [launches, setLaunches] = useState([]);
+   const [onPage, setOnPage] = useState([]);
+   const [option, setOption] = useState(false);
+
+   useEffect(() => {
+      getAllLaunches().then(response => {
+         setLaunches(response.data);
+      });
+   }, []);
+
+   useEffect(() => {
+      setOnPage(option ? launches.slice(0, option) : launches);
+   }, [option, launches]);
+
+   return (
+      <div>
+         <Select setOption={setOption} />
+         <Pagination launches={launches} option={option} setOnPage={setOnPage} />
+         <Launches launches={onPage} />
+      </div>
+   );
+};
 
 export default App;
